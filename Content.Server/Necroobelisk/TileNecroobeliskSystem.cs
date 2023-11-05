@@ -18,6 +18,12 @@ using Content.Server.Atmos.EntitySystems;
 using Content.Server.Station.Systems;
 using Content.Server.Station.Components;
 using Content.Shared.Necroobelisk;
+using Content.Shared.InfectionDead.Components;
+using Content.Shared.Humanoid;
+using Content.Shared.Mobs.Components;
+using Content.Shared.Unitology.Components;
+using Content.Shared.Damage;
+
 
 namespace Content.Server.Necroobelisk;
 
@@ -34,6 +40,7 @@ public sealed class TileNecroobeliskSystem : EntitySystem
     [Dependency] private readonly AtmosphereSystem _atmosphere = default!;
     [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
+    [Dependency] private readonly DamageableSystem _damage = default!;
     /// <inheritdoc/>
     public override void Initialize()
     {
@@ -91,13 +98,28 @@ public sealed class TileNecroobeliskSystem : EntitySystem
 
     private void DoSanity(EntityUid uid, NecroobeliskComponent component, ref SanityCheckEvent args)
     {
-        if (_mobState.IsDead(args.victinUID))
+        if (!HasComp<MobStateComponent>(args.victinUID) || !HasComp<HumanoidAppearanceComponent>(args.victinUID))
         {return;}
+
+        if(HasComp<UnitologyComponent>(args.victinUID))
+        {return;}
+
+        DamageSpecifier dspec = new();
+        dspec.DamageDict.Add("Cellular", 5f);
+        _damage.TryChangeDamage(args.victinUID, dspec, true, false);
+
         if(HasComp<ImmunitetInfectionDeadComponent>(args.victinUID))
         {return;}
-        _audio.PlayPvs("/Audio/Effects/Fluids/splat.ogg", args.victinUID, AudioParams.Default.WithVariation(0.2f).WithVolume(-4f));
+
+        if (_mobState.IsDead(args.victinUID))
+        {_audio.PlayPvs("/Audio/Effects/Fluids/splat.ogg", args.victinUID, AudioParams.Default.WithVariation(0.2f).WithVolume(-4f));
         _bodySystem.GibBody(args.victinUID);
-        Spawn(component.SanityMobSpawnId, Transform(args.victinUID).Coordinates);
+        Spawn(component.SanityMobSpawnId, Transform(args.victinUID).Coordinates);}
+
+        if (HasComp<InfectionDeadComponent>(args.victinUID))
+            {return;}
+
+        EnsureComp<InfectionDeadComponent>(args.victinUID);
 
     }
 
