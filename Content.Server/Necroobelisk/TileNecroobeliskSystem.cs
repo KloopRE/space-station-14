@@ -155,11 +155,11 @@ public sealed class TileNecroobeliskSystem : EntitySystem
         if (component.Pulselvl >= 49 && component.Pulselvl < 50)
         {
 
-            SpawnOnRandomGridLocation(grid, "MobBrute");
+            SpawnOnRandomGridLocation(grid, "MobTwitcher");
             component.Pulselvl = 0;
         }
 
-        if (component.Pulselvl >= 50)
+        if (component.Pulselvl >= 60)
         {
 
             SpawnOnRandomGridLocation(grid, "MobSlasher");

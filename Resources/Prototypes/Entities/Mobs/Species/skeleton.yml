@@ -98,6 +98,7 @@
           visualType: Large
           messages: [ "skeleton-sprayed-by-oat-milk-popup" ]
           probability: 0.5
+  - type: ImmunitetInfectionDead
 
 - type: entity
   parent: BaseSpeciesDummy

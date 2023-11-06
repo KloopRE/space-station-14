@@ -110,6 +110,7 @@
         sprite: "Effects/creampie.rsi"
         state: "creampie_moth"
         visible: false
+  - type: Sanity
 
 - type: entity
   parent: BaseSpeciesDummy

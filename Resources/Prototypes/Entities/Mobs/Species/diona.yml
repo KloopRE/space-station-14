@@ -98,6 +98,7 @@
   - type: BodyEmotes
     soundsId: DionaBodyEmotes
   - type: IgnoreKudzu
+  - type: ImmunitetInfectionDead
 
 - type: entity
   parent: BaseSpeciesDummy

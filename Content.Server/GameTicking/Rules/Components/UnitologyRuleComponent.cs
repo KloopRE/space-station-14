@@ -43,7 +43,7 @@ public sealed partial class UnitologyRuleComponent : Component
     /// Min players needed for Uniolutionary gamemode to start.
     /// </summary>
     [DataField, ViewVariables(VVAccess.ReadWrite)]
-    public int MinPlayers = 15;
+    public int MinPlayers = 50;
 
     /// <summary>
     /// Max  Unis allowed during selection.
@@ -55,7 +55,7 @@ public sealed partial class UnitologyRuleComponent : Component
     /// The amount of  Unis that will spawn per this amount of players.
     /// </summary>
     [DataField, ViewVariables(VVAccess.ReadWrite)]
-    public int PlayersPerUni = 15;
+    public int PlayersPerUni = 50;
 
     /// <summary>
     /// The gear  Uniolutionaries are given on spawn.
