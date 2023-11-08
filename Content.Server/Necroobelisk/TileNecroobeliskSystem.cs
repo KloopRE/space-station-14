@@ -17,8 +17,7 @@ using Robust.Shared.Map.Components;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Station.Systems;
 using Content.Server.Station.Components;
-using Content.Shared.Necroobelisk;
-using Content.Shared.InfectionDead.Components;
+using Content.Server.InfectionDead;
 using Content.Shared.Humanoid;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Unitology.Components;
@@ -41,6 +40,8 @@ public sealed class TileNecroobeliskSystem : EntitySystem
     [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly DamageableSystem _damage = default!;
+    [Dependency] private readonly InfectionDeadSystem _infection = default!;
+
     /// <inheritdoc/>
     public override void Initialize()
     {
@@ -112,9 +113,15 @@ public sealed class TileNecroobeliskSystem : EntitySystem
         {return;}
 
         if (_mobState.IsDead(args.victinUID))
-        {_audio.PlayPvs("/Audio/Effects/Fluids/splat.ogg", args.victinUID, AudioParams.Default.WithVariation(0.2f).WithVolume(-4f));
-        _bodySystem.GibBody(args.victinUID);
-        Spawn(component.SanityMobSpawnId, Transform(args.victinUID).Coordinates);}
+        {
+        _audio.PlayPvs("/Audio/Effects/Fluids/splat.ogg", uid, AudioParams.Default.WithVariation(0.2f).WithVolume(-4f));
+        _infection.Drop(args.victinUID, args.victinUID);
+        QueueDel(args.victinUID);
+        Spawn(component.SanityMobSpawnId, Transform(args.victinUID).Coordinates);
+        //_audio.PlayPvs("/Audio/Effects/Fluids/splat.ogg", args.victinUID, AudioParams.Default.WithVariation(0.2f).WithVolume(-4f));
+        //_bodySystem.GibBody(args.victinUID);
+
+        }
 
         if (HasComp<InfectionDeadComponent>(args.victinUID))
             {return;}

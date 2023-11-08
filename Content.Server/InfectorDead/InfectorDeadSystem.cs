@@ -2,19 +2,14 @@
 
 using Content.Shared.InfectorDead;
 using Content.Shared.Interaction;
-using Content.Shared.Bed.Sleep;
 using Content.Shared.DoAfter;
-using Content.Shared.Emag.Systems;
 using Content.Shared.Humanoid;
-using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.InfectionDead.Components;
-using Robust.Shared.Utility;
 using Content.Shared.InfectorDead.Components;
-using Content.Shared.InfectorDead;
+using Content.Server.InfectionDead;
 using Robust.Shared.Audio;
-using Content.Server.Body.Components;
 using Content.Server.Body.Systems;
 
 namespace Content.Server.InfectorDead.EntitySystems
@@ -25,7 +20,7 @@ public sealed partial class InfectorDeadSystem : EntitySystem
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly BodySystem _bodySystem = default!;
-
+    [Dependency] private readonly InfectionDeadSystem _infection = default!;
     private HashSet<EntityUid> _toUpdate = new();
 
     public override void Initialize()
@@ -79,7 +74,8 @@ public sealed partial class InfectorDeadSystem : EntitySystem
         if (_mobState.IsDead(args.Args.Target.Value))
                 {
                     _audio.PlayPvs("/Audio/Effects/Fluids/splat.ogg", args.Args.Target.Value, AudioParams.Default.WithVariation(0.2f).WithVolume(-4f));
-                    _bodySystem.GibBody(args.Args.Target.Value);
+                    _infection.Drop(args.Args.Target.Value, args.Args.Target.Value);
+                    QueueDel(args.Args.Target.Value);
                     Spawn(component.ArmyMobSpawnId, Transform(args.Args.Target.Value).Coordinates);
                     args.Handled = true;
                     return;
@@ -89,6 +85,8 @@ public sealed partial class InfectorDeadSystem : EntitySystem
 
         args.Handled = true;
     }
+
+
 
 }
 }
