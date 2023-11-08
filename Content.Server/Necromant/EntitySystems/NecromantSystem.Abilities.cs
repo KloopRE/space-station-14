@@ -1,21 +1,12 @@
 using Content.Shared.Popups;
 using Content.Shared.Damage;
 using Content.Shared.Necromant;
-using Robust.Shared.Random;
-using Robust.Shared.Map;
-using Content.Server.Storage.Components;
 using Content.Server.Light.Components;
 using Content.Server.Ghost;
-
-using Content.Server.Storage.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Bed.Sleep;
-using System.Linq;
-using System.Numerics;
-using Content.Server.Maps;
 using Content.Server.Revenant.Components;
 using Content.Shared.DoAfter;
-using Content.Shared.Emag.Systems;
 using Content.Shared.FixedPoint;
 using Content.Shared.Humanoid;
 using Content.Shared.Mobs;
@@ -23,15 +14,10 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Necromant.Components;
 
-using Robust.Shared.Utility;
-
 namespace Content.Server.Necromant.EntitySystems;
 
 public sealed partial class NecromantSystem
 {
-    [Dependency] private readonly IMapManager _mapManager = default!;
-    [Dependency] private readonly EntityStorageSystem _entityStorage = default!;
-    [Dependency] private readonly EmagSystem _emag = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly MobThresholdSystem _mobThresholdSystem = default!;
     [Dependency] private readonly GhostSystem _ghost = default!;
@@ -48,7 +34,6 @@ public sealed partial class NecromantSystem
         SubscribeLocalEvent<NecromantComponent, NecromantRaiseDivaderActionEvent>(OnRaiseDivader);
         SubscribeLocalEvent<NecromantComponent, NecromantRaisePregnantActionEvent>(OnRaisePregnant);
         SubscribeLocalEvent<NecromantComponent, NecromantRaiseBruteActionEvent>(OnRaiseBrute);
-
     }
 
     private void OnInteract(EntityUid uid, NecromantComponent component, InteractNoHandEvent args)
@@ -113,6 +98,7 @@ public sealed partial class NecromantSystem
                 message = "revenant-soul-yield-average";
                 break;
         }
+
         _popup.PopupEntity(Loc.GetString(message, ("target", args.Args.Target)), args.Args.Target.Value, uid, PopupType.Medium);
         args.Handled = true;
     }
@@ -197,7 +183,6 @@ public sealed partial class NecromantSystem
         if (args.Handled)
             return;
 
-
         if (!TryUseAbility(uid, component, component.ArmyCost, component.ArmyDebuffs))
             return;
 
@@ -210,7 +195,6 @@ public sealed partial class NecromantSystem
     {
         if (args.Handled)
             return;
-
 
         if (!TryUseAbility(uid, component, component.InfectorCost, component.ArmyDebuffs))
             return;
@@ -225,7 +209,6 @@ public sealed partial class NecromantSystem
         if (args.Handled)
             return;
 
-
         if (!TryUseAbility(uid, component, component.TwitcherCost, component.ArmyDebuffs))
             return;
 
@@ -238,7 +221,6 @@ public sealed partial class NecromantSystem
     {
         if (args.Handled)
             return;
-
 
         if (!TryUseAbility(uid, component, component.DivaderCost, component.ArmyDebuffs))
             return;
@@ -267,7 +249,6 @@ public sealed partial class NecromantSystem
         if (args.Handled)
             return;
 
-
         if (!TryUseAbility(uid, component, component.BruteCost, component.ArmyDebuffs))
             return;
 
@@ -275,5 +256,4 @@ public sealed partial class NecromantSystem
 
         Spawn(component.BruteMobSpawnId, Transform(uid).Coordinates);
     }
-
 }

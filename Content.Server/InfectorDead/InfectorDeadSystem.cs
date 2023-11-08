@@ -1,5 +1,3 @@
-
-
 using Content.Shared.InfectorDead;
 using Content.Shared.Interaction;
 using Content.Shared.DoAfter;
@@ -8,19 +6,18 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.InfectionDead.Components;
 using Content.Shared.InfectorDead.Components;
-using Content.Server.InfectionDead;
 using Robust.Shared.Audio;
-using Content.Server.Body.Systems;
+using Content.Server.InfectionDead;
 
-namespace Content.Server.InfectorDead.EntitySystems
-{
+namespace Content.Server.InfectorDead.EntitySystems;
+
 public sealed partial class InfectorDeadSystem : EntitySystem
 {
     [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly BodySystem _bodySystem = default!;
     [Dependency] private readonly InfectionDeadSystem _infection = default!;
+
     private HashSet<EntityUid> _toUpdate = new();
 
     public override void Initialize()
@@ -46,9 +43,7 @@ public sealed partial class InfectorDeadSystem : EntitySystem
         BeginInfected(uid, target, component);
 
         args.Handled = true;
-
     }
-
 
     private void BeginInfected(EntityUid uid, EntityUid target, InfectorDeadComponent component)
     {
@@ -57,14 +52,9 @@ public sealed partial class InfectorDeadSystem : EntitySystem
             DistanceThreshold = 2
         };
 
-
-
         if (!_doAfter.TryStartDoAfter(searchDoAfter))
             return;
-
-
     }
-
 
     private void OnDoAfter(EntityUid uid, InfectorDeadComponent component, InfectorDeadDoAfterEvent args)
     {
@@ -72,21 +62,18 @@ public sealed partial class InfectorDeadSystem : EntitySystem
             return;
 
         if (_mobState.IsDead(args.Args.Target.Value))
-                {
-                    _audio.PlayPvs("/Audio/Effects/Fluids/splat.ogg", args.Args.Target.Value, AudioParams.Default.WithVariation(0.2f).WithVolume(-4f));
-                    _infection.Drop(args.Args.Target.Value, args.Args.Target.Value);
-                    QueueDel(args.Args.Target.Value);
-                    Spawn(component.ArmyMobSpawnId, Transform(args.Args.Target.Value).Coordinates);
-                    args.Handled = true;
-                    return;
-                }
+        {
+            _audio.PlayPvs("/Audio/Effects/Fluids/splat.ogg", args.Args.Target.Value, AudioParams.Default.WithVariation(0.2f).WithVolume(-4f));
+            _infection.Drop(args.Args.Target.Value, args.Args.Target.Value);
+            QueueDel(args.Args.Target.Value);
+            Spawn(component.ArmyMobSpawnId, Transform(args.Args.Target.Value).Coordinates);
+            args.Handled = true;
+            return;
+        }
+
         EnsureComp<InfectionDeadComponent>(args.Args.Target.Value);
         _toUpdate.Add(args.Args.Target.Value);
 
         args.Handled = true;
     }
-
-
-
-}
 }

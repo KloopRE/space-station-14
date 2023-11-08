@@ -3,12 +3,10 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Configuration;
 using Content.Shared.Sanity.Components;
 
-
 namespace Content.Server.Chemistry.ReagentEffects;
 
 public sealed partial class CureSanity : ReagentEffect
 {
-
     protected override string? ReagentEffectGuidebookText(IPrototypeManager prototype, IEntitySystemManager entSys)
     {
         return Loc.GetString("спасает от импульса обелиска", ("chance", Probability));
@@ -27,4 +25,3 @@ public sealed partial class CureSanity : ReagentEffect
         xform.lvl = 100;
     }
 }
-

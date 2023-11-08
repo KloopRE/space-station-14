@@ -2,7 +2,6 @@ using Content.Shared.Roles;
 using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
-using Content.Shared.Storage;
 
 namespace Content.Server.GameTicking.Rules.Components;
 
@@ -64,10 +63,8 @@ public sealed partial class UnitologyRuleComponent : Component
     public List<EntProtoId> StartingGear = new()
     {
         "SyringeExtractInfectorDead",
-        "SyringeExtractInfectorDead",
-        "EncryptionKeySyndie"
+        "SyringeExtractInfectorDead"
     };
 
     public bool ObeliskState = false;
-
 }

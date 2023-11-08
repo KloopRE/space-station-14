@@ -1,56 +1,35 @@
 using System.Linq;
-using Content.Server.Administration.Logs;
 using Content.Server.Antag;
 using Content.Server.Chat.Managers;
-using Content.Server.Flash;
 using Content.Server.GameTicking.Rules.Components;
 using Content.Server.Mind;
 using Content.Server.NPC.Components;
 using Content.Server.NPC.Systems;
-using Content.Server.Popups;
 using Content.Server.Unitology.Components;
 using Content.Server.Roles;
-using Content.Server.RoundEnd;
 using Content.Shared.Chat;
 using Content.Shared.Mind;
-using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Unitology.Components;
 using Content.Shared.Roles;
-using Content.Shared.Stunnable;
 using Content.Shared.InfectionDead.Components;
-using Robust.Server.GameObjects;
 using Robust.Shared.Timing;
 using Content.Shared.Humanoid;
 using Content.Server.Abilities.Unitolog;
 using Content.Shared.Sanity.Components;
-using Content.Shared.Tag;
 using Content.Shared.Mobs.Components;
-using Content.Server.Database;
 
 namespace Content.Server.GameTicking.Rules;
 
-/// <summary>
-/// Where all the main stuff for Uniolutionaries happens (Assigning  Unis, Command on station, and checking for the game to end.)
-/// </summary>
 public sealed class UnitologyRuleSystem : GameRuleSystem<UnitologyRuleComponent>
 {
-    [Dependency] private readonly IAdminLogManager _adminLogManager = default!;
     [Dependency] private readonly IChatManager _chatManager = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly AntagSelectionSystem _antagSelection = default!;
     [Dependency] private readonly MindSystem _mind = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly NpcFactionSystem _npcFaction = default!;
-    [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly RoleSystem _role = default!;
-    [Dependency] private readonly SharedStunSystem _stun = default!;
-    [Dependency] private readonly RoundEndSystem _roundEnd = default!;
-    [Dependency] private readonly AudioSystem _audioSystem = default!;
-    [Dependency] private readonly EntityLookupSystem _lookup = default!;
-    [Dependency] private readonly TagSystem _Tag = default!;
-
-
 
     [ValidatePrototypeId<NpcFactionPrototype>]
     public const string UnitologyNpcFaction = "Necromorfs";
@@ -71,7 +50,6 @@ public sealed class UnitologyRuleSystem : GameRuleSystem<UnitologyRuleComponent>
         base.Started(uid, component, gameRule, args);
         component.CommandCheck = _timing.CurTime + component.TimerWait;
     }
-
 
     private void OnRoundEndText(RoundEndTextAppendEvent ev)
     {
@@ -168,8 +146,9 @@ public sealed class UnitologyRuleSystem : GameRuleSystem<UnitologyRuleComponent>
             EnsureComp<UnitologTileSpawnComponent>(Uni);
             RemCompDeferred<SanityComponent>(Uni);
 
-            if(!comp.ObeliskState)
-            {EnsureComp<UnitologPowersComponent>(Uni);}
+            if (!comp.ObeliskState)
+                EnsureComp<UnitologPowersComponent>(Uni);
+
             comp.ObeliskState = true;
             var factionComp = EnsureComp<NpcFactionMemberComponent>(Uni);
             foreach (var id in new List<string>(factionComp.Factions))
@@ -211,11 +190,11 @@ public sealed class UnitologyRuleSystem : GameRuleSystem<UnitologyRuleComponent>
         }
     }
 
-
     private bool result()
     {
         var humRevs = AllEntityQuery<HumanoidAppearanceComponent, MobStateComponent>();
         int humanCount = 0;
+
         while (humRevs.MoveNext(out var uid, out _, out _))
         {
             if (!_mobState.IsDead(uid))
@@ -224,18 +203,17 @@ public sealed class UnitologyRuleSystem : GameRuleSystem<UnitologyRuleComponent>
 
         var uniRevs = AllEntityQuery<UnitologyComponent, MobStateComponent>();
         int uniCount = 0;
+
         while (uniRevs.MoveNext(out var uid, out _, out _))
         {
             if (!_mobState.IsDead(uid))
-            {uniCount+= 1;}
+                uniCount += 1;
         }
 
         if (humanCount < uniCount)
-        {
-        return true;
-        }
-        return false;
+            return true;
 
+        return false;
     }
 
     private static readonly string[] Outcomes =

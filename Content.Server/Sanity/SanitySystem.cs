@@ -1,4 +1,3 @@
-
 using Content.Shared.Sanity.Components;
 using Content.Shared.Popups;
 
@@ -6,7 +5,6 @@ namespace Content.Server.Sanity
 {
     public sealed class SanitySystem : EntitySystem
     {
-
         [Dependency] private readonly SharedPopupSystem _popup = default!;
 
         public override void Initialize()
@@ -14,6 +12,7 @@ namespace Content.Server.Sanity
             base.Initialize();
             SubscribeLocalEvent<SanityComponent, SanityEvent>(OnState);
         }
+
         private void OnState(EntityUid uid, SanityComponent component, ref SanityEvent args)
         {
             if (component.lvl < 100)
@@ -33,7 +32,5 @@ namespace Content.Server.Sanity
                 _popup.PopupEntity(Loc.GetString("Вы теряете рассудок, вам совмем плохо!"), uid, uid);
             }
         }
-
-
     }
 }

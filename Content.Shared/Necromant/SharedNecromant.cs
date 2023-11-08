@@ -19,8 +19,6 @@ public sealed class SoulSearchDoAfterComplete : EntityEventArgs
     }
 }
 
-
-
 public sealed class SoulSearchDoAfterCancelled : EntityEventArgs
 {
 }

@@ -206,6 +206,7 @@
       - PowerDrill
       - MiningDrill
       - AnomalyScanner
+      - ObeliskStoper
       - AnomalyLocator
       - AnomalyLocatorWide
       - RCD

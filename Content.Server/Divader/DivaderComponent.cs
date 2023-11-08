@@ -6,7 +6,6 @@ namespace Content.Server.Divader
     [RegisterComponent]
     public sealed partial class DivaderComponent : Component
     {
-
         [ViewVariables(VVAccess.ReadWrite), DataField("DivaderRHMobSpawnId", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
         public string RHMobSpawnId = "MobDivaderRH";
 
@@ -15,6 +14,5 @@ namespace Content.Server.Divader
 
         [ViewVariables(VVAccess.ReadWrite), DataField("DivaderLHMobSpawnId", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
         public string LHMobSpawnId = "MobDivaderLH";
-
     }
 }

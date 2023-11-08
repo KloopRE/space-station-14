@@ -55,6 +55,17 @@
     {
       "name": "lino"
     },
+	{
+      "name": "necromeat"
+    },
+	{
+      "name": "necromeat-inhand-right",
+      "directions": 4
+    },
+    {
+      "name": "necromeat-inhand-left",
+      "directions": 4
+    },
     {
       "name": "meat"
     },

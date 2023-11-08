@@ -10,7 +10,6 @@ namespace Content.Shared.Necromant.Components;
 [RegisterComponent, NetworkedComponent]
 public sealed partial class NecromantComponent : Component
 {
-
     /// <summary>
     /// The total amount of Essence the Necromant has. Functions
     /// as health and is regenerated.
@@ -49,7 +48,6 @@ public sealed partial class NecromantComponent : Component
     // Step 3: Clicking the entity again begins to harvest the soul, which causes the Necromant to become vulnerable
     // Step 4: The second doafter for the harvest completes, killing the target and granting the Necromant Essence.
     #region Harvest Ability
-
 
     /// <summary>
     /// The duration of the soul search
@@ -109,89 +107,80 @@ public sealed partial class NecromantComponent : Component
     public float DefileEffectChance = 0.5f;
     #endregion
 
+    #region Army Ability
+    [DataField("actionNecromantRaiseArmy", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+    public string ActionRaiseArmy = "ActionNecromantRaiseArmy";
 
-        #region Army Ability
-        [DataField("actionNecromantRaiseArmy", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
-        public string ActionRaiseArmy = "ActionNecromantRaiseArmy";
+    /// <summary>
+    ///     The action for the Raise Army ability
+    /// </summary>
+    [DataField("actionNecromantRaiseArmyEntity")] public EntityUid? ActionRaiseArmyEntity;
 
-        /// <summary>
-        ///     The action for the Raise Army ability
-        /// </summary>
-        [DataField("actionNecromantRaiseArmyEntity")] public EntityUid? ActionRaiseArmyEntity;
-        
-        [ViewVariables(VVAccess.ReadWrite), DataField("armyCost")]
-        public FixedPoint2 ArmyCost = -30;
+    [ViewVariables(VVAccess.ReadWrite), DataField("armyCost")]
+    public FixedPoint2 ArmyCost = -30;
 
-        [DataField("armyDebuffs")]
-        public Vector2 ArmyDebuffs = new(3);
-        /// <summary>
-        ///     The entity prototype of the mob that Raise Army summons
-        /// </summary>
+    [DataField("armyDebuffs")]
+    public Vector2 ArmyDebuffs = new(3);
+    /// <summary>
+    ///     The entity prototype of the mob that Raise Army summons
+    /// </summary>
 
+    [ViewVariables(VVAccess.ReadWrite), DataField("armyMobSpawnId", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+    public string ArmyMobSpawnId = "MobSlasher";
 
-        [ViewVariables(VVAccess.ReadWrite), DataField("armyMobSpawnId", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
-        public string ArmyMobSpawnId = "MobSlasher";
+    [DataField("actionNecromantRaisePregnantEntity")] public EntityUid? ActionRaisePregnantEntity;
 
-        
+    [ViewVariables(VVAccess.ReadWrite), DataField("PregnantCost")]
+    public FixedPoint2 PregnantCost = -60;
 
-        [DataField("actionNecromantRaisePregnantEntity")] public EntityUid? ActionRaisePregnantEntity;
-        
-        [ViewVariables(VVAccess.ReadWrite), DataField("PregnantCost")]
-        public FixedPoint2 PregnantCost = -60;
+    [DataField("actionNecromantRaisePregnant", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+    public string ActionRaisePregnant = "ActionNecromantRaisePregnant";
 
-        [DataField("actionNecromantRaisePregnant", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
-        public string ActionRaisePregnant = "ActionNecromantRaisePregnant";
+    [ViewVariables(VVAccess.ReadWrite), DataField("PregnantMobSpawnId", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+    public string PregnantMobSpawnId = "MobPregnant";
 
+    [DataField("actionNecromantRaiseInfectorEntity")] public EntityUid? ActionRaiseInfectorEntity;
 
-        [ViewVariables(VVAccess.ReadWrite), DataField("PregnantMobSpawnId", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
-        public string PregnantMobSpawnId = "MobPregnant";
+    [ViewVariables(VVAccess.ReadWrite), DataField("InfectorCost")]
+    public FixedPoint2 InfectorCost = -120;
 
+    [DataField("actionNecromantRaiseInfector", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+    public string ActionRaiseInfector = "ActionNecromantRaiseInfector";
+    [ViewVariables(VVAccess.ReadWrite), DataField("InfectorMobSpawnId", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+    public string InfectorMobSpawnId = "MobInfector";
 
-        [DataField("actionNecromantRaiseInfectorEntity")] public EntityUid? ActionRaiseInfectorEntity;
-        
-        [ViewVariables(VVAccess.ReadWrite), DataField("InfectorCost")]
-        public FixedPoint2 InfectorCost = -120;
-        
-        [DataField("actionNecromantRaiseInfector", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
-        public string ActionRaiseInfector = "ActionNecromantRaiseInfector";
-        [ViewVariables(VVAccess.ReadWrite), DataField("InfectorMobSpawnId", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
-        public string InfectorMobSpawnId = "MobInfector";
+    [DataField("actionNecromantRaiseTwitcherEntity")] public EntityUid? ActionRaiseTwitcherEntity;
 
-        [DataField("actionNecromantRaiseTwitcherEntity")] public EntityUid? ActionRaiseTwitcherEntity;
+    [ViewVariables(VVAccess.ReadWrite), DataField("TwitcherCost")]
+    public FixedPoint2 TwitcherCost = -60;
 
-        [ViewVariables(VVAccess.ReadWrite), DataField("TwitcherCost")]
-        public FixedPoint2 TwitcherCost = -60;
+    [DataField("actionNecromantRaiseTwitcher", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+    public string ActionRaiseTwitcher = "ActionNecromantRaiseTwitcher";
 
-        [DataField("actionNecromantRaiseTwitcher", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
-        public string ActionRaiseTwitcher = "ActionNecromantRaiseTwitcher";
+    [ViewVariables(VVAccess.ReadWrite), DataField("TwitcherMobSpawnId", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+    public string TwitcherMobSpawnId = "MobTwitcher";
 
-        [ViewVariables(VVAccess.ReadWrite), DataField("TwitcherMobSpawnId", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
-        public string TwitcherMobSpawnId = "MobTwitcher";
+    [DataField("actionNecromantRaiseDivaderEntity")] public EntityUid? ActionRaiseDivaderEntity;
 
+    [ViewVariables(VVAccess.ReadWrite), DataField("DivaderCost")]
+    public FixedPoint2 DivaderCost = -80;
 
-        [DataField("actionNecromantRaiseDivaderEntity")] public EntityUid? ActionRaiseDivaderEntity;
+    [DataField("actionNecromantRaiseDivader", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+    public string ActionRaiseDivader = "ActionNecromantRaiseDivader";
 
-        [ViewVariables(VVAccess.ReadWrite), DataField("DivaderCost")]
-        public FixedPoint2 DivaderCost = -80;
+    [ViewVariables(VVAccess.ReadWrite), DataField("DivaderMobSpawnId", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+    public string DivaderMobSpawnId = "MobDivader";
 
-        [DataField("actionNecromantRaiseDivader", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
-        public string ActionRaiseDivader = "ActionNecromantRaiseDivader";
+    [DataField("actionNecromantRaiseBruteEntity")] public EntityUid? ActionRaiseBruteEntity;
 
-        [ViewVariables(VVAccess.ReadWrite), DataField("DivaderMobSpawnId", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
-        public string DivaderMobSpawnId = "MobDivader";
+    [ViewVariables(VVAccess.ReadWrite), DataField("DivaderBrute")]
+    public FixedPoint2 BruteCost = -180;
 
+    [DataField("actionNecromantRaiseBrute", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+    public string ActionRaiseBrute = "ActionNecromantRaiseBrute";
 
-        [DataField("actionNecromantRaiseBruteEntity")] public EntityUid? ActionRaiseBruteEntity;
+    [ViewVariables(VVAccess.ReadWrite), DataField("BruteMobSpawnId", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+    public string BruteMobSpawnId = "MobBrute";
 
-        [ViewVariables(VVAccess.ReadWrite), DataField("DivaderBrute")]
-        public FixedPoint2 BruteCost = -180;
-
-        [DataField("actionNecromantRaiseBrute", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
-        public string ActionRaiseBrute = "ActionNecromantRaiseBrute";
-
-        [ViewVariables(VVAccess.ReadWrite), DataField("BruteMobSpawnId", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
-        public string BruteMobSpawnId = "MobBrute";
-
-        #endregion
-
+    #endregion
 }

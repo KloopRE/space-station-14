@@ -28,11 +28,26 @@ namespace Content.Shared.InfectionDead.Components
         [DataField("nextDamageTime", customTypeSerializer: typeof(TimeOffsetSerializer)), ViewVariables(VVAccess.ReadWrite)]
         public TimeSpan NextDamageTime = TimeSpan.Zero;
 
-        /// <summary>
-        ///     The entity prototype of the mob that Raise Army summons
-        /// </summary>
-        [ViewVariables(VVAccess.ReadWrite), DataField("armyMobSpawnId", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
-        public string ArmyMobSpawnId = "MobSlasher";
+
+        [ViewVariables(VVAccess.ReadWrite), DataField("divaderMobSpawnId", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+        public string DivaderMobSpawnId = "MobDivader";
+
+        public float shanceMobSpawnDivader = 0.1f;
+
+        [ViewVariables(VVAccess.ReadWrite), DataField("twitcherMobSpawnId", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+        public string TwitcherMobSpawnId = "MobTwitcher";
+
+        public float shanceMobSpawnTwitcher = 0.3f;
+
+        [ViewVariables(VVAccess.ReadWrite), DataField("pregnantMobSpawnId", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+        public string PregnantMobSpawnId = "MobPregnant";
+
+        public float shanceMobSpawnPregnant = 0.2f;
+
+        [ViewVariables(VVAccess.ReadWrite), DataField("slasherMobSpawnId", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+        public string SlasherMobSpawnId = "MobSlasher";
+
+        public float shanceMobSpawnSlasher = 0.4f;
 
     }
 

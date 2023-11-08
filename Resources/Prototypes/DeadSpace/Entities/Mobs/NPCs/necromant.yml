@@ -1,9 +1,7 @@
 
 - type: entity
   id: MobNecromant
-  name: Necromant
-  parent: SimpleSpaceMobBase
-  description: От него веет смертью и загадочностью.
+  parent: NecromorfMobBase
   components:
   - type: MindContainer
   - type: InputMover
@@ -132,8 +130,6 @@
 
 - type: entity
   id: ActionNecromantArmy
-  name: Slasher
-  description: Призыв некромарфа.
   noSpawn: true
   components:
   - type: InstantAction
@@ -144,8 +140,6 @@
 
 - type: entity
   id: ActionNecromantTwitcher
-  name: Twitcher
-  description: Призыв бегуна.
   noSpawn: true
   components:
   - type: InstantAction
@@ -156,8 +150,6 @@
 
 - type: entity
   id: ActionNecromantInfector
-  name: Infector
-  description: Призыв заразителя.
   noSpawn: true
   components:
   - type: InstantAction
@@ -168,8 +160,6 @@
 
 - type: entity
   id: ActionNecromantDivader
-  name: Divader
-  description: Призыв разделителя.
   noSpawn: true
   components:
   - type: InstantAction
@@ -180,8 +170,6 @@
 
 - type: entity
   id: ActionNecromantPregnant
-  name: Pregnant
-  description: Призыв беременного.
   noSpawn: true
   components:
   - type: InstantAction
@@ -192,8 +180,6 @@
 
 - type: entity
   id: ActionNecromantBrute
-  name: Brute
-  description: Призыв зверя.
   noSpawn: true
   components:
   - type: InstantAction
@@ -210,8 +196,8 @@
 
 - type: listing
   id: NecromantArmy
-  name: Army
-  description: Этой способностью вы сможете призвать рядового некроморфа.
+  name: list-name-slasher
+  description: list-description-slasher
   productAction: ActionNecromantArmy
   cost:
     StolenEssence: 30
@@ -223,8 +209,8 @@
 
 - type: listing
   id: NecromantTwitcher
-  name: ArmyTwitcher
-  description: Этой способностью вы сможете призвать бегуна.
+  name: list-name-twitcher
+  description: list-description-twitcher
   productAction: ActionNecromantTwitcher
   cost:
     StolenEssence: 60
@@ -236,8 +222,8 @@
 
 - type: listing
   id: NecromantInfector
-  name: ArmyInfector
-  description: Этой способностью вы сможете призвать инфектора.
+  name: list-name-infector
+  description: list-description-infector
   productAction: ActionNecromantInfector
   cost:
     StolenEssence: 100
@@ -249,8 +235,8 @@
 
 - type: listing
   id: NecromantDivader
-  name: ArmyDivader
-  description: Этой способностью вы сможете призвать разделителя.
+  name: list-name-divader
+  description: list-description-divader
   productAction: ActionNecromantDivader
   cost:
     StolenEssence: 80
@@ -262,8 +248,8 @@
 
 - type: listing
   id: NecromantPregnant
-  name: ArmyPregnant
-  description: Этой способностью вы сможете призвать беременного.
+  name: list-name-pregnant
+  description: list-description-pregnant
   productAction: ActionNecromantPregnant
   cost:
     StolenEssence: 80
@@ -275,8 +261,8 @@
 
 - type: listing
   id: NecromantBrute
-  name: Brute
-  description: Этой способностью вы сможете призвать зверя.
+  name: list-name-brute
+  description: list-description-brute
   productAction: ActionNecromantBrute
   cost:
     StolenEssence: 200
@@ -288,8 +274,8 @@
 
 - type: entity
   id: ActionNecromantShop
-  name: Shop
-  description: Открыть маазин способностей.
+  name: entity-name-shop-necromant
+  description: entity-description-shop-necromant
   noSpawn: true
   components:
   - type: InstantAction

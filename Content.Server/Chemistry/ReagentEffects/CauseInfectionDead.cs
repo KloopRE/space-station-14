@@ -4,12 +4,10 @@ using Content.Shared.InfectionDead.Components;
 using Content.Shared.Humanoid;
 using Content.Shared.Mobs.Components;
 
-
 namespace Content.Server.Chemistry.ReagentEffects;
 
 public sealed partial class CauseInfectionDead : ReagentEffect
 {
-
     protected override string? ReagentEffectGuidebookText(IPrototypeManager prototype, IEntitySystemManager entSys)
     {
         return Loc.GetString("это пить не стоит", ("chance", Probability));

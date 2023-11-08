@@ -1,45 +1,26 @@
-﻿using System.Linq;
-using System.Numerics;
 using Content.Shared.Necroobelisk.Components;
-using Content.Shared.Maps;
-using Content.Shared.Physics;
-using Robust.Shared.Map;
-using Robust.Shared.Physics;
-using Robust.Shared.Physics.Components;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Database;
-using Content.Shared.Interaction;
-using Content.Shared.Popups;
-using Robust.Shared.GameStates;
 using Robust.Shared.Network;
 using Robust.Shared.Utility;
 using Robust.Shared.Audio;
 using Content.Shared.Sanity.Components;
-using Content.Shared.CCVar;
-using Content.Shared.Materials;
-using Content.Shared.Radio;
-using Robust.Shared.Map.Components;
-
 
 namespace Content.Shared.Necroobelisk;
 
 public sealed class SharedNecroobeliskSystem : EntitySystem
 {
     [Dependency] protected readonly IGameTiming Timing = default!;
-    [Dependency] private readonly IMapManager _map = default!;
-    [Dependency] private readonly ITileDefinitionManager _tiledef = default!;
     [Dependency] protected readonly SharedAudioSystem Audio = default!;
     [Dependency] private readonly INetManager _net = default!;
     [Dependency] protected readonly IRobustRandom Random = default!;
     [Dependency] protected readonly ISharedAdminLogManager Log = default!;
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
 
     private ISawmill _sawmill = default!;
 
-    /// <inheritdoc/>
     public override void Initialize()
     {
         SubscribeLocalEvent<NecroobeliskComponent, EntityUnpausedEvent>(OnNecroobeliskUnpause);
@@ -47,15 +28,12 @@ public sealed class SharedNecroobeliskSystem : EntitySystem
         _sawmill = Logger.GetSawmill("necroobelisk");
     }
 
-
-
     private void OnNecroobeliskUnpause(EntityUid uid, NecroobeliskComponent component, ref EntityUnpausedEvent args)
     {
         component.NextPulseTime += args.PausedTime;
         component.NextCheckTimeSanity += args.PausedTime;
         Dirty(component);
     }
-
 
     public void DoSanityCheck(EntityUid uid, NecroobeliskComponent? component = null)
     {
@@ -154,7 +132,5 @@ public sealed class SharedNecroobeliskSystem : EntitySystem
                 DoSanityCheck(ent, necroobelisk);
             }
         }
-
     }
-
 }

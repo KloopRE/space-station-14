@@ -1,30 +1,20 @@
-
 using Content.Shared.Sanity.Components;
 using Robust.Shared.Map;
 using Robust.Shared.Timing;
 using Content.Shared.Popups;
 using Robust.Shared.Network;
 
-
 namespace Content.Shared.Sanity;
 
 public sealed class SharedSanitySystem : EntitySystem
 {
     [Dependency] protected readonly IGameTiming Timing = default!;
-    [Dependency] private readonly IMapManager _map = default!;
-    [Dependency] private readonly ITileDefinitionManager _tiledef = default!;
-    [Dependency] private readonly INetManager _net = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-
-    private ISawmill _sawmill = default!;
 
     /// <inheritdoc/>
     public override void Initialize()
     {
         SubscribeLocalEvent<SanityComponent, EntityUnpausedEvent>(OnSanityUnpause);
     }
-
-
 
     private void OnSanityUnpause(EntityUid uid, SanityComponent component, ref EntityUnpausedEvent args)
     {
@@ -57,7 +47,5 @@ public sealed class SharedSanitySystem : EntitySystem
                 DoSanityCheck(ent, sanity);
             }
         }
-
     }
-
 }

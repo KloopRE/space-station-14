@@ -10,7 +10,6 @@ namespace Content.Shared.NecroobeliskStoper;
 [RegisterComponent, Access(typeof(SharedNecroobeliskSystem))]
 public sealed partial class NecroobeliskStoperComponent : Component
 {
-
     [ViewVariables]
     public EntityUid? NecroobeliskStoper;
     /// <summary>
@@ -25,4 +24,3 @@ public sealed partial class NecroobeliskStoperComponent : Component
     [DataField("completeSound")]
     public SoundSpecifier? CompleteSound = new SoundPathSpecifier("/Audio/Items/beep.ogg");
 }
-

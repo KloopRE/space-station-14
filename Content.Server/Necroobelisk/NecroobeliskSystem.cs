@@ -1,10 +1,12 @@
-
+using System.Linq;
 using System.Numerics;
+using Content.Server.Maps;
+using Content.Server.Body.Components;
 using Content.Server.Body.Systems;
 using Content.Shared.Necroobelisk.Components;
+using Content.Shared.Necroobelisk;
 using Content.Shared.Maps;
 using Content.Shared.Physics;
-using Content.Shared.InfectionDead.Components;
 using Robust.Shared.Map;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
@@ -17,11 +19,6 @@ using Robust.Shared.Map.Components;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Station.Systems;
 using Content.Server.Station.Components;
-using Content.Server.InfectionDead;
-using Content.Shared.Humanoid;
-using Content.Shared.Mobs.Components;
-using Content.Shared.Unitology.Components;
-using Content.Shared.Damage;
 
 
 namespace Content.Server.Necroobelisk;
@@ -39,16 +36,12 @@ public sealed class TileNecroobeliskSystem : EntitySystem
     [Dependency] private readonly AtmosphereSystem _atmosphere = default!;
     [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
-    [Dependency] private readonly DamageableSystem _damage = default!;
-    [Dependency] private readonly InfectionDeadSystem _infection = default!;
-
     /// <inheritdoc/>
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<NecroobeliskComponent, SanityCheckEvent>(DoSanity);
         SubscribeLocalEvent<NecroobeliskComponent, NecroobeliskSpawnArmyEvent>(DoArmy);
-        SubscribeLocalEvent<NecroobeliskComponent, NecroobeliskCheckStateEvent>(DoSetLayer);
 
         SubscribeLocalEvent<NecroobeliskComponent, NecroobeliskPulseEvent>(OnSeverityChanged);
         SubscribeLocalEvent<NecroobeliskComponent, MapInitEvent>(OnMapInit);
@@ -99,34 +92,11 @@ public sealed class TileNecroobeliskSystem : EntitySystem
 
     private void DoSanity(EntityUid uid, NecroobeliskComponent component, ref SanityCheckEvent args)
     {
-        if (!HasComp<MobStateComponent>(args.victinUID) || !HasComp<HumanoidAppearanceComponent>(args.victinUID))
-        {return;}
-
-        if(HasComp<UnitologyComponent>(args.victinUID))
-        {return;}
-
-        DamageSpecifier dspec = new();
-        dspec.DamageDict.Add("Cellular", 5f);
-        _damage.TryChangeDamage(args.victinUID, dspec, true, false);
-
-        if(HasComp<ImmunitetInfectionDeadComponent>(args.victinUID))
-        {return;}
-
         if (_mobState.IsDead(args.victinUID))
-        {
-        _audio.PlayPvs("/Audio/Effects/Fluids/splat.ogg", uid, AudioParams.Default.WithVariation(0.2f).WithVolume(-4f));
-        _infection.Drop(args.victinUID, args.victinUID);
-        QueueDel(args.victinUID);
+        {return;}
+        _audio.PlayPvs("/Audio/Effects/Fluids/splat.ogg", args.victinUID, AudioParams.Default.WithVariation(0.2f).WithVolume(-4f));
+        _bodySystem.GibBody(args.victinUID);
         Spawn(component.SanityMobSpawnId, Transform(args.victinUID).Coordinates);
-        //_audio.PlayPvs("/Audio/Effects/Fluids/splat.ogg", args.victinUID, AudioParams.Default.WithVariation(0.2f).WithVolume(-4f));
-        //_bodySystem.GibBody(args.victinUID);
-
-        }
-
-        if (HasComp<InfectionDeadComponent>(args.victinUID))
-            {return;}
-
-        EnsureComp<InfectionDeadComponent>(args.victinUID);
 
     }
 
@@ -162,11 +132,11 @@ public sealed class TileNecroobeliskSystem : EntitySystem
         if (component.Pulselvl >= 49 && component.Pulselvl < 50)
         {
 
-            SpawnOnRandomGridLocation(grid, "MobTwitcher");
+            SpawnOnRandomGridLocation(grid, "MobBrute");
             component.Pulselvl = 0;
         }
 
-        if (component.Pulselvl >= 60)
+        if (component.Pulselvl >= 50)
         {
 
             SpawnOnRandomGridLocation(grid, "MobSlasher");
@@ -176,11 +146,6 @@ public sealed class TileNecroobeliskSystem : EntitySystem
 
 
 
-    private void DoSetLayer(EntityUid uid, NecroobeliskComponent component, ref NecroobeliskCheckStateEvent args)
-    {
-        component.NextCheckTimeSanity = args.CurTime+TimeSpan.FromSeconds(360);
-        component.Active = 1;
-    }
 
     public void SpawnOnRandomGridLocation(EntityUid grid, string toSpawn)
     {

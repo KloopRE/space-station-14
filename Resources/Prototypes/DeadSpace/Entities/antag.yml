@@ -14,8 +14,8 @@
 
 - type: entity
   id: ActionUnitologObelisk
-  name: Создать некрообелиск
-  description: создать некрообелиск.
+  name: necromorfs-action-name-actionunitologobelisk
+  description: necromorfs-action-name-actionunitologobelisk
   noSpawn: true
   components:
   - type: InstantAction
@@ -26,8 +26,8 @@
 
 - type: entity
   id: ActionUnitologTileSpawn
-  name: Создать тентаклю
-  description: тентакля наносит урон и замедляет.
+  name: necromorfs-action-name-actionunitologobelisk
+  description: necromorfs-action-name-actionunitologtileSpawn
   noSpawn: true
   components:
   - type: InstantAction
@@ -38,13 +38,15 @@
 
 - type: entity
   id: NecroTile
-  name: tendons
-  description: Преграда тентаклей
+  name: necromorfs-entity-necrokudzu-name
+  description: necromorfs-entity-description-name
   placement:
     mode: SnapgridCenter
     snap:
       - Wall
   components:
+    - type: TimedDespawn
+      lifetime: 60
     - type: MeleeSound
       soundGroups:
         Brute:
@@ -82,8 +84,8 @@
     - type: DamageContacts
       damage:
         types:
-          Slash: 20
-          Piercing: 20
+          Slash: 10
+          Piercing: 10
       ignoreWhitelist:
         tags:
         - Flesh

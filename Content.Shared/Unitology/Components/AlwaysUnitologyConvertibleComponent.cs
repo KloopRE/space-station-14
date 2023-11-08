@@ -8,5 +8,4 @@ namespace Content.Shared.Unitology.Components;
 [RegisterComponent, NetworkedComponent, Access(typeof(SharedUnitologySystem))]
 public sealed partial class AlwaysUnitologyConvertibleComponent : Component
 {
-
 }

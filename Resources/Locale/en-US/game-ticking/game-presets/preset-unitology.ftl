@@ -32,10 +32,10 @@ uni-break-control = {$name} Вспомнил о своей истинной пр
 
 ## General
 
-rev-title = Юнитологи
-rev-description = Культ юнитологов.
+uni-title = Юнитологи
+uni-description = Культ юнитологов.
 
-rev-title = Юнитологи
+uni-title = Юнитологи
 
 uni-not-enough-ready-players = Недостаточно игроков для игры. Было подготовлено {$readyPlayersCount} из минимального колличества {$minimumPlayers} нужных игроков. Нельзя начать событие.
 uni-no-one-ready = No players readied up! Can't start a Revolution.

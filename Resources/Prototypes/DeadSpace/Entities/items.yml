@@ -1,13 +1,21 @@
 - type: entity
   parent: BaseItem
   id: ObeliskStoper
-  name: C140
-  description: Останавливает некрообелиск на некоторое время.
   components:
   - type: Sprite
     sprite: Objects/Specific/Research/anomalyscanner.rsi
     state: icon
   - type: NecroobeliskStoper
+
+- type: latheRecipe
+  id: ObeliskStoper
+  result: ObeliskStoper
+  completetime: 5
+  materials:
+    Plastic: 500
+    Glass: 500
+    Gold: 1000
+    Plasma: 1500
 
 - type: cargoProduct
   id: ObeliskStoperProduct
@@ -15,7 +23,7 @@
     sprite: Objects/Specific/Research/anomalyscanner.rsi
     state: icon
   product: CrateObeliskStoper
-  cost: 10000
+  cost: 20000
   category: Science
   group: market
 
@@ -48,9 +56,9 @@
 
 - type: reagent
   id: ExtractInfectorDead
-  name: Экстракт инфектора
+  name: entity-name-extractinfectordead
   group: Toxins
-  desc: Густой и розовый, пахнет отвратительно. Пробовать не стану!
+  desc: reagent-desc-extractinfectordead
   physicalDesc: reagent-physical-desc-thick
   flavor: sweet
   color: "#e0a5b9"
@@ -63,7 +71,6 @@
               min: 5
 
 - type: entity
-  name: шприц
   parent: BaseSyringe
   id: SyringeExtractInfectorDead
   components:
@@ -77,9 +84,9 @@
 
 - type: reagent
   id: ZetaOne
-  name: ЗетаВан
+  name: entity-name-zetaone
   group: Medicine
-  desc: На вкус как лекарство
+  desc: reagent-desc-zetaone
   physicalDesc: reagent-physical-desc-thick
   flavor: medicine
   color: "#86caf7"
@@ -92,10 +99,8 @@
               min: 14
 
 - type: entity
-  name: zetaOne медипен
   parent: ChemicalMedipen
   id: ZetaOneMedipen
-  description: Содержит в себе лекарство от вируса некроморфозы.
   components:
   - type: Sprite
     sprite: Objects/Specific/Medical/medipen.rsi
@@ -121,3 +126,47 @@
             Quantity: 15
   - type: Tag
     tags: []
+
+- type: tile
+  id: NecroFlesh
+  name: tiles-necro-floor
+  sprite: /Textures/Tiles/necrotile.png
+  variants: 4
+  placementVariants:
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  baseTurf: Plating
+  isSubfloor: false
+  canCrowbar: true
+  footstepSounds:
+    collection: BarestepCarpet
+  itemDrop: FloorNecroTileItemFlesh
+  friction: 0.05 #slippy
+  heatCapacity: 10000
+
+- type: entity
+  id: FloorNecroTileItemFlesh
+  parent: FloorTileItemBase
+  components:
+  - type: Sprite
+    state: necromeat
+  - type: Item
+    heldPrefix: necrotile
+  - type: FloorTile
+    outputs:
+    - Plating
+    - NecroFlesh
+  - type: Stack
+    stackType: FloorTileNecro
+  - type: Construction
+    graph: TileFlesh
+    node: fleshTile
+
+- type: stack
+  id: FloorTileNecro
+  name: tiles-necro-floor
+  spawn: FloorNecroTileItemFlesh
+  maxCount: 30
+  itemSize: 5

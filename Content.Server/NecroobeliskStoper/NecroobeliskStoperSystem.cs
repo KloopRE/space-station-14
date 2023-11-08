@@ -1,18 +1,7 @@
-
 using Content.Shared.DoAfter;
 using Content.Shared.Interaction;
-using Robust.Shared.Utility;
 using Content.Shared.NecroobeliskStoper;
-using Content.Shared.Anomaly.Components;
-using Content.Shared.DoAfter;
-using Robust.Server.GameObjects;
-using Robust.Shared.Configuration;
-using Robust.Shared.Physics.Events;
-using Robust.Shared.Prototypes;
-using Robust.Shared.Random;
-using Content.Shared.Popups;
 using Content.Shared.Necroobelisk.Components;
-using Content.Shared.Necroobelisk;
 
 namespace Content.Server.Necroobelisk;
 
@@ -21,22 +10,16 @@ namespace Content.Server.Necroobelisk;
 /// </summary>
 public sealed class NecroobeliskStoperSystem : EntitySystem
 {
-
-    //[Dependency] private readonly IConfigurationManager _configuration = default!;
-    //[Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
-    [Dependency] private readonly SharedPointLightSystem _pointLight = default!;
     [Dependency] protected readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
+
     public override void Initialize()
     {
-
         base.Initialize();
 
         SubscribeLocalEvent<NecroobeliskStoperComponent, AfterInteractEvent>(OnScannerAfterInteract); //AfterInteractEvent
         SubscribeLocalEvent<NecroobeliskStoperComponent, NecroobeliskStoperDoAfterEvent>(OnDoAfter);
     }
-
 
     private void OnScannerAfterInteract(EntityUid uid, NecroobeliskStoperComponent component, AfterInteractEvent args)
     {
@@ -68,5 +51,4 @@ public sealed class NecroobeliskStoperSystem : EntitySystem
 
         args.Handled = true;
     }
-
 }

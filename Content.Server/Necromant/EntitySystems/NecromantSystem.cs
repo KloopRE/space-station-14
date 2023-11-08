@@ -1,15 +1,12 @@
 using System.Numerics;
 using Content.Server.Actions;
-using Content.Server.GameTicking;
 using Content.Server.Store.Components;
 using Content.Server.Store.Systems;
 using Content.Shared.Alert;
 using Content.Shared.Damage;
 using Content.Shared.DoAfter;
 using Content.Shared.Examine;
-using Content.Shared.Eye;
 using Content.Shared.FixedPoint;
-using Content.Shared.Maps;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Necromant;
@@ -17,26 +14,19 @@ using Content.Shared.Necromant.Components;
 using Content.Shared.StatusEffect;
 using Content.Shared.Stunnable;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Random;
 
 namespace Content.Server.Necromant.EntitySystems;
 
 public sealed partial class NecromantSystem : EntitySystem
 {
-    [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly ActionsSystem _action = default!;
     [Dependency] private readonly AlertsSystem _alerts = default!;
     [Dependency] private readonly DamageableSystem _damage = default!;
-    [Dependency] private readonly EntityLookupSystem _lookup = default!;
-    [Dependency] private readonly GameTicker _ticker = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
-    [Dependency] private readonly SharedEyeSystem _eye = default!;
-    [Dependency] private readonly StatusEffectsSystem _statusEffects = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly SharedStunSystem _stun = default!;
     [Dependency] private readonly StoreSystem _store = default!;
-
 
     [ValidatePrototypeId<EntityPrototype>]
     private const string NecromantShopId = "ActionNecromantShop";
@@ -44,7 +34,6 @@ public sealed partial class NecromantSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-
 
         SubscribeLocalEvent<NecromantComponent, ComponentStartup>(OnStartup);
         SubscribeLocalEvent<NecromantComponent, MapInitEvent>(OnMapInit);
@@ -58,8 +47,6 @@ public sealed partial class NecromantSystem : EntitySystem
         InitializeAbilities();
     }
 
-
-
     private void OnStartup(EntityUid uid, NecromantComponent component, ComponentStartup args)
     {
         //update the icon
@@ -68,7 +55,6 @@ public sealed partial class NecromantSystem : EntitySystem
         //default the visuals
         _appearance.SetData(uid, NecromantVisuals.Harvesting, false);
         _appearance.SetData(uid, NecromantVisuals.Stunned, false);
-
     }
 
     private void OnMapInit(EntityUid uid, NecromantComponent component, MapInitEvent args)
@@ -172,7 +158,4 @@ public sealed partial class NecromantSystem : EntitySystem
             }
         }
     }
-
-
-
 }

@@ -30,8 +30,7 @@ namespace Content.Client.Credits
         {
             ["Nuclear Operative"] = 1,
             ["Syndicate Agent"] = 2,
-            ["Revolutionary"] = 3,
-            ["Unitology"] = 4
+            ["Revolutionary"] = 3
         };
 
         public CreditsWindow()

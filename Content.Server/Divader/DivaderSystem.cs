@@ -1,4 +1,3 @@
-
 using Content.Shared.Nutrition.Components;
 using Content.Shared.Nutrition.EntitySystems;
 using Robust.Server.GameObjects;
@@ -29,6 +28,5 @@ namespace Content.Server.Divader
                 Spawn(component.LHMobSpawnId, Transform(uid).Coordinates);
              }
         }
-      
     }
 }

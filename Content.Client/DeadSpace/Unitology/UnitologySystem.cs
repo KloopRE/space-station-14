@@ -9,15 +9,12 @@ namespace Content.Client.Unitology;
 /// </summary>
 public sealed class UnitologySystem : AntagStatusIconSystem<UnitologyComponent>
 {
-
-
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<UnitologyComponent, GetStatusIconsEvent>(GetUniIcon);
     }
-
 
     private void GetUniIcon(EntityUid uid, UnitologyComponent comp, ref GetStatusIconsEvent args)
     {

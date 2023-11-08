@@ -15,5 +15,4 @@ public sealed partial class UnitologyComponent : Component
     /// </summary>
     [DataField, ViewVariables(VVAccess.ReadWrite)]
     public ProtoId<StatusIconPrototype> UniStatusIcon = "UnitologyFaction";
-
 }

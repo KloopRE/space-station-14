@@ -1,24 +1,21 @@
 
-using Robust.Server.GameObjects;
-using Content.Server.Body.Systems;
 using Content.Shared.Damage;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
 using Robust.Shared.Audio;
 using Content.Shared.InfectionDead.Components;
 using Content.Shared.Inventory;
-
+using Robust.Shared.Random;
 
 namespace Content.Server.InfectionDead
 {
     public sealed class InfectionDeadSystem : EntitySystem
     {
-        [Dependency] private readonly BodySystem _bodySystem = default!;
-        [Dependency] private readonly TransformSystem _xform = default!;
         [Dependency] private readonly MobStateSystem _mobState = default!;
         [Dependency] private readonly SharedAudioSystem _audio = default!;
         [Dependency] private readonly DamageableSystem _damage = default!;
         [Dependency] private readonly InventorySystem _inventory = default!;
+        [Dependency] private readonly IRobustRandom _random = default!;
 
         public override void Initialize()
         {
@@ -43,11 +40,30 @@ namespace Content.Server.InfectionDead
                    // DamageSpecifier dspec = new();
                    // dspec.DamageDict.Add("Slash", 200f);
                    // _damage.TryChangeDamage(uid, dspec, true, false);
+                    var randomChance = _random.NextDouble();
                     _audio.PlayPvs("/Audio/Effects/Fluids/splat.ogg", uid, AudioParams.Default.WithVariation(0.2f).WithVolume(-4f));
-                    //_bodySystem.GibBody(uid);
                     Drop(uid, uid);
                     QueueDel(uid);
-                    Spawn(component.ArmyMobSpawnId, Transform(uid).Coordinates);
+                    if (randomChance < component.shanceMobSpawnDivader)
+                    {
+                        Spawn(component.DivaderMobSpawnId, Transform(uid).Coordinates);
+                        return;
+                    }
+                    else if (randomChance < component.shanceMobSpawnDivader + component.shanceMobSpawnPregnant)
+                    {
+                        Spawn(component.PregnantMobSpawnId, Transform(uid).Coordinates);
+                        return;
+                    }
+                    else if (randomChance < component.shanceMobSpawnDivader + component.shanceMobSpawnTwitcher + component.shanceMobSpawnPregnant)
+                    {
+                        Spawn(component.TwitcherMobSpawnId, Transform(uid).Coordinates);
+                        return;
+                    }
+                    else if (randomChance < component.shanceMobSpawnDivader + component.shanceMobSpawnTwitcher + component.shanceMobSpawnPregnant + component.shanceMobSpawnSlasher)
+                    {
+                        Spawn(component.SlasherMobSpawnId, Transform(uid).Coordinates);
+                        return;
+                    }
                 }
         }
 

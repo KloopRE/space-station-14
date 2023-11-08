@@ -85,6 +85,7 @@
   - AdvancedCapacitorStockPart
   - AdvancedMatterBinStockPart
   - NanoManipulatorStockPart
+  - ObeliskStoper
 
 - type: technology
   id: AbnormalArtifactManipulation
