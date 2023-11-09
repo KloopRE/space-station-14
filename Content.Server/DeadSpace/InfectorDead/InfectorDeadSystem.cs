@@ -1,0 +1,91 @@
+
+
+using Content.Shared.DeadSpace.InfectorDead;
+using Content.Shared.Interaction;
+using Content.Shared.DoAfter;
+using Content.Shared.Humanoid;
+using Content.Shared.Mobs.Components;
+using Content.Shared.Mobs.Systems;
+using Content.Shared.DeadSpace.InfectionDead.Components;
+using Content.Shared.DeadSpace.InfectorDead.Components;
+using Content.Server.DeadSpace.InfectionDead;
+using Robust.Shared.Audio;
+
+namespace Content.Server.DeadSpace.InfectorDead.EntitySystems
+{
+public sealed partial class InfectorDeadSystem : EntitySystem
+{
+    [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
+    [Dependency] private readonly MobStateSystem _mobState = default!;
+    [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly InfectionDeadSystem _infection = default!;
+    private HashSet<EntityUid> _toUpdate = new();
+
+    public override void Initialize()
+    {
+        base.Initialize();
+        SubscribeLocalEvent<InfectorDeadComponent, InteractNoHandEvent>(OnInteract);
+        SubscribeLocalEvent<InfectorDeadComponent, InfectorDeadDoAfterEvent>(OnDoAfter);
+    }
+
+    private void OnInteract(EntityUid uid, InfectorDeadComponent component, InteractNoHandEvent args)
+    {
+        if (args.Target == args.User || args.Target == null)
+            return;
+
+        var target = args.Target.Value;
+
+        if (!HasComp<MobStateComponent>(target) || !HasComp<HumanoidAppearanceComponent>(target) || HasComp<InfectorDeadComponent>(target) || HasComp<ImmunitetInfectionDeadComponent>(target))
+            return;
+
+        if (HasComp<InfectionDeadComponent>(target))
+            return;
+
+        BeginInfected(uid, target, component);
+
+        args.Handled = true;
+
+    }
+
+
+    private void BeginInfected(EntityUid uid, EntityUid target, InfectorDeadComponent component)
+    {
+        var searchDoAfter = new DoAfterArgs(EntityManager, uid, component.InfectedDuration, new InfectorDeadDoAfterEvent(), uid, target: target)
+        {
+            DistanceThreshold = 2
+        };
+
+
+
+        if (!_doAfter.TryStartDoAfter(searchDoAfter))
+            return;
+
+
+    }
+
+
+    private void OnDoAfter(EntityUid uid, InfectorDeadComponent component, InfectorDeadDoAfterEvent args)
+    {
+        if (args.Cancelled || args.Handled || args.Args.Target == null)
+            return;
+
+        if (_mobState.IsDead(args.Args.Target.Value))
+                {
+                    _audio.PlayPvs("/Audio/Effects/Fluids/splat.ogg", args.Args.Target.Value, AudioParams.Default.WithVariation(0.2f).WithVolume(-4f));
+                    _infection.Drop(args.Args.Target.Value, args.Args.Target.Value);
+                    QueueDel(args.Args.Target.Value);
+                    InfectionDeadComponent comp = new InfectionDeadComponent();
+                    _infection.SpawnMob(args.Args.Target.Value, comp);
+                    args.Handled = true;
+                    return;
+                }
+        EnsureComp<InfectionDeadComponent>(args.Args.Target.Value);
+        _toUpdate.Add(args.Args.Target.Value);
+
+        args.Handled = true;
+    }
+
+
+
+}
+}

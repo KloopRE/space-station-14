@@ -1,8 +1,8 @@
-using Content.Shared.Unitology.Components;
+using Content.Shared.DeadSpace.Unitology.Components;
 using Content.Client.Antag;
 using Content.Shared.StatusIcon.Components;
 
-namespace Content.Client.Unitology;
+namespace Content.Client.DeadSpace.Unitology;
 
 /// <summary>
 /// Used for the client to get status icons from other revs.

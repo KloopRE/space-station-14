@@ -1,7 +1,7 @@
 using Content.Shared.Chemistry.Reagent;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Configuration;
-using Content.Shared.Sanity.Components;
+using Content.Shared.DeadSpace.Sanity.Components;
 
 namespace Content.Server.Chemistry.ReagentEffects;
 

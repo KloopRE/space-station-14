@@ -383,7 +383,20 @@
   parent: BaseStructure
   id: StructureObelisk
   components:
-  - type: InteractionOutline
+  - type: RangedDamageSound
+    soundGroups:
+      Brute:
+        collection:
+          MetalBulletImpact
+    soundTypes:
+      Heat:
+        collection:
+          MetalLaserImpact
+  - type: Tag
+    tags:
+    - Wall
+  - type: Physics
+    bodyType: Static
   - type: Sprite
     noRot: true
     sprite: DeadSpace/Mobs/Necromorfs/obelisk.rsi
@@ -395,13 +408,15 @@
       fix1:
         shape:
           !type:PhysShapeCircle
-          radius: 0.3
-        density: 190
+          radius: 0.5
+        density: 1000
         mask:
-        - MachineMask
+        - FullTileMask
         layer:
-        - Impassable
+        - WallLayer
   - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
   - type: Destructible
     thresholds:
     - trigger:
@@ -410,7 +425,15 @@
       behaviors:
         - !type:DoActsBehavior
           acts: [ "Destruction" ]
+  - type: Appearance
+  - type: DamageVisuals
+    thresholds: [4, 8, 12]
+    damageDivisor: 100
+    trackAllDamage: true
+    damageOverlay:
+      sprite: DeadSpace/cracks.rsi
   - type: Necroobelisk
+
 
 - type: entity
   id: MobTwitcher

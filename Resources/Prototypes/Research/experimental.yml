@@ -85,7 +85,6 @@
   - AdvancedCapacitorStockPart
   - AdvancedMatterBinStockPart
   - NanoManipulatorStockPart
-  - ObeliskStoper
 
 - type: technology
   id: AbnormalArtifactManipulation
@@ -98,6 +97,7 @@
   cost: 5000
   recipeUnlocks:
   - TraversalDistorterMachineCircuitboard
+  - ObeliskStoper
 
 - type: technology
   id: AdvancedAnomalyResearch

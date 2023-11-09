@@ -3,8 +3,35 @@
   id: ObeliskStoper
   components:
   - type: Sprite
-    sprite: Objects/Specific/Research/anomalyscanner.rsi
-    state: icon
+    sprite: DeadSpace/Items/stoper.rsi
+    layers:
+    - state: ano01
+  - type: Damageable
+  - type: Physics
+    bodyType: Dynamic
+  - type: CollisionWake
+    enabled: false
+  - type: InteractionOutline
+  - type: Reactive
+    groups:
+      Acidic: [Touch]
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.25,-0.25,0.25,0.25"
+        density: 20
+        mask:
+        - ItemMask
+        layer:
+        - Opaque
+        restitution: 0.3  # fite me
+        friction: 0.2
+  - type: Item
+    size: Normal
+    sprite: DeadSpace/Items/stoper.rsi
+    heldPrefix: ano01
   - type: NecroobeliskStoper
 
 - type: latheRecipe
@@ -20,8 +47,8 @@
 - type: cargoProduct
   id: ObeliskStoperProduct
   icon:
-    sprite: Objects/Specific/Research/anomalyscanner.rsi
-    state: icon
+    sprite: DeadSpace/Items/stoper.rsi
+    state: ano01
   product: CrateObeliskStoper
   cost: 20000
   category: Science

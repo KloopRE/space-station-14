@@ -1,6 +1,6 @@
 using Content.Shared.Chemistry.Reagent;
 using Robust.Shared.Prototypes;
-using Content.Shared.InfectionDead.Components;
+using Content.Shared.DeadSpace.InfectionDead.Components;
 using Content.Shared.Humanoid;
 using Content.Shared.Mobs.Components;
 

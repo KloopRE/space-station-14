@@ -1,5 +1,5 @@
-using Content.Shared.Necroobelisk;
-using Content.Shared.Necroobelisk.Components;
+using Content.Shared.DeadSpace.Necroobelisk;
+using Content.Shared.DeadSpace.Necroobelisk.Components;
 using Robust.Client.GameObjects;
 
 namespace Content.Client.Necroobelisk;

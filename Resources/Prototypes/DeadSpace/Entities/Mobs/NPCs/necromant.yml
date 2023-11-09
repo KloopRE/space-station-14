@@ -20,6 +20,8 @@
     factions:
     - Necromorfs
   - type: Hands
+  - type: Speech
+    speechVerb: LargeMob
   - type: Sprite
     drawdepth: Mobs
     sprite: DeadSpace/Mobs/Necromorfs/necromant.rsi
@@ -97,10 +99,6 @@
   - type: NoSlip
   - type: Perishable #Ummmm the acid kills a lot of the bacteria or something
     molsPerSecondPerUnitMass: 0.0005
-  - type: Speech
-    speechVerb: LargeMob
-  - type: ReplacementAccent
-    accent: genericAggressive
   - type: Necromant
   - type: PointLight
     color: MediumPurple
