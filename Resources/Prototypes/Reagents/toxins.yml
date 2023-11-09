@@ -503,6 +503,12 @@
   physicalDesc: reagent-physical-desc-soothing
   color: "#AAAAAA"
   metabolisms:
+    Medicine:
+      effects:
+        - !type:CureSanity
+          conditions:
+            - !type:ReagentThreshold
+              min: 10
     Poison:
       effects:
       - !type:GenericStatusEffect
@@ -536,7 +542,7 @@
         damage:
           types:
             Poison: 0.06
-            
+
 
 - type: reagent
   id: Lead
