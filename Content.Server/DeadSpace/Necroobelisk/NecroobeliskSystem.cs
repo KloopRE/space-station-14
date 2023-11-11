@@ -51,7 +51,7 @@ public sealed class TileNecroobeliskSystem : EntitySystem
         base.Initialize();
         SubscribeLocalEvent<NecroobeliskComponent, SanityCheckEvent>(DoSanity);
         SubscribeLocalEvent<NecroobeliskComponent, NecroobeliskSpawnArmyEvent>(DoArmy);
-        SubscribeLocalEvent<NecroobeliskComponent, NecroobeliskCheckStateEvent>(DoSetLayer);
+        SubscribeLocalEvent<NecroobeliskComponent, NecroobeliskCheckStateEvent>(DoSetCheckTimeSanity);
 
         SubscribeLocalEvent<NecroobeliskComponent, NecroobeliskPulseEvent>(OnSeverityChanged);
         SubscribeLocalEvent<NecroobeliskComponent, MapInitEvent>(OnMapInit);
@@ -190,7 +190,7 @@ public sealed class TileNecroobeliskSystem : EntitySystem
 
 
 
-    private void DoSetLayer(EntityUid uid, NecroobeliskComponent component, ref NecroobeliskCheckStateEvent args)
+    private void DoSetCheckTimeSanity(EntityUid uid, NecroobeliskComponent component, ref NecroobeliskCheckStateEvent args)
     {
         component.NextCheckTimeSanity = args.CurTime+TimeSpan.FromSeconds(360);
         component.Active = 1;

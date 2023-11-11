@@ -115,13 +115,6 @@
     - NecromantAbilities
     currencyWhitelist:
     - StolenEssence
-  - type: RandomMetadata
-    nameSegments:
-    - The
-    - NecromantType
-    - of
-    - NecromantAdjective
-    - NecromantTheme
   - type: Damageable
     damageModifierSet: Necro
   - type: Unitology

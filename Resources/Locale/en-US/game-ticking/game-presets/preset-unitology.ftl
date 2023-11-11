@@ -1,7 +1,3 @@
-## Rev Head
-
-roles-antag-uni-name = Юнитолгог
-roles-antag-uni-objective = Your objective is to take over the station by converting people to your cause and killing all Command staff on station.
 
 uni-role-greeting =
     Вы юнитолог.

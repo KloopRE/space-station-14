@@ -59,7 +59,7 @@ public sealed partial class NecromantSystem : EntitySystem
         //var wrappedMessage = Loc.GetString("chat-manager-server-wrap-message", ("message", brif));
         //_chatManager.ChatMessageToOne(ChatChannel.Server, brif, wrappedMessage, uid, false, MsgChannel, Color.FromHex("#5e9cff"));
         string brif = (Loc.GetString("necromant-briefing"));
-        _chatManager.TrySendOOCMessage(args.Player, brif, OOCChatType.OOC);
+        _chatManager.DispatchServerMessage(args.Player, brif);
 
     }
 
