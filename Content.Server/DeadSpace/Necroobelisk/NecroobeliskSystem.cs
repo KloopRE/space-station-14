@@ -137,6 +137,7 @@ public sealed class TileNecroobeliskSystem : EntitySystem
         _audio.PlayPvs("/Audio/Effects/Fluids/splat.ogg", args.victinUID, AudioParams.Default.WithVariation(0.2f).WithVolume(-4f));
         _infection.Drop(args.victinUID, args.victinUID);
         InfectionDeadComponent comp = new InfectionDeadComponent();
+        QueueDel(args.victinUID);
         _infection.SpawnMob(args.victinUID, comp);
         return;
         }
