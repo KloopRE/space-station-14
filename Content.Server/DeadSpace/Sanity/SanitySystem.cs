@@ -29,7 +29,7 @@ namespace Content.Server.DeadSpace.Sanity
             }
             if (component.lvl <= 34 && component.lvl > 0)
             {
-                _popup.PopupEntity(Loc.GetString("Вы теряете рассудок, вам совмем плохо!"), uid, uid);
+                _popup.PopupEntity(Loc.GetString("Вы теряете рассудок, вам совсем плохо!"), uid, uid);
             }
         }
     }

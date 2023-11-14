@@ -49,6 +49,7 @@ public sealed class TileNecroobeliskSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
+
         SubscribeLocalEvent<NecroobeliskComponent, SanityCheckEvent>(DoSanity);
         SubscribeLocalEvent<NecroobeliskComponent, NecroobeliskSpawnArmyEvent>(DoArmy);
         SubscribeLocalEvent<NecroobeliskComponent, NecroobeliskCheckStateEvent>(DoSetCheckTimeSanity);
@@ -75,17 +76,10 @@ public sealed class TileNecroobeliskSystem : EntitySystem
         var xform = Transform(uid);
         Spawn(component.SupercriticalSpawn, xform.Coordinates);
 
-        if (_station.GetStationInMap(xform.MapID) is not { } station ||
-            !TryComp<StationDataComponent>(station, out var data) ||
-            _station.GetLargestGrid(data) is not { } grid)
-        {
-            if (xform.GridUid == null)
-                return;
-            grid = xform.GridUid.Value;
-        }
-
-        SpawnOnRandomGridLocation(grid, "MobNecromant");
-
+        var msg = new GameGlobalSoundEvent("/Audio/DeadSpace/Necromorfs/markersound.ogg", AudioParams.Default.WithVariation(1f).WithVolume(-5f));
+        var stationFilter = _stationSystem.GetInOwningStation(uid);
+        stationFilter.AddPlayersByPvs(uid, entityManager: EntityManager);
+        RaiseNetworkEvent(msg, stationFilter);
     }
 
     private void OnSeverityChanged(EntityUid uid, NecroobeliskComponent component, ref NecroobeliskPulseEvent args)

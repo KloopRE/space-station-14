@@ -487,6 +487,31 @@
     description: ghost-role-information-twitcher-description
     rules: ghost-role-information-twitcher-rules
 
+- type: entity
+  id: MobTwitcherlvl2
+  parent: MobSlasher
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: DeadSpace/Mobs/Necromorfs/twitcherlvl2.rsi
+    layers:
+    - map: ["enum.DamageStateVisualLayers.Base"]
+      state: running
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      400: Dead
+  - type: MovementSpeedModifier
+    baseWalkSpeed : 6
+    baseSprintSpeed : 6
+  - type: GhostRole
+    allowMovement: true
+    allowSpeech: true
+    makeSentient: true
+    name: ghost-role-information-twitcher-name
+    description: ghost-role-information-twitcher-description
+    rules: ghost-role-information-twitcher-rules
+
 - type: npcFaction
   id: Necromorfs
   hostile:

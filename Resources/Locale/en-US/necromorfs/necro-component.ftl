@@ -15,6 +15,9 @@ ent-MobBrute = зверь
 ent-MobTwitcher = охотник
     .desc = Похож на мутировавший труп.
 
+ent-MobTwitcherlvl2 = охотник второй стадии
+    .desc = Похож на мутировавший труп.
+
 ent-MobSlasher = слэшер
     .desc = Похож на мутировавший труп.
 

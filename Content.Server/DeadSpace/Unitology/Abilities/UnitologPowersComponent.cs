@@ -22,8 +22,14 @@ namespace Content.Server.Abilities.DeadSpace.Unitolog
         [DataField("ObeliskActionEntity")] public EntityUid? ObeliskActionEntity;
 
 
-         [DataField("infectedDuration")]
+        [DataField("infectedDuration")]
         public TimeSpan Duration = TimeSpan.FromSeconds(60);
+
+        public int countDeads = 3;
+        public List<EntityUid> entityUidList = new();
+
+        [DataField("Range")]
+        public float range = 100f;
 
     }
 }

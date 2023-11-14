@@ -15,6 +15,12 @@ using Content.Shared.Humanoid;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.DoAfter;
 using Content.Shared.DeadSpace.UnitologyPowerSystem;
+using Content.Shared.Popups;
+using Content.Shared.Mind;
+using Content.Shared.Mind.Components;
+using Content.Shared.DeadSpace.Unitology.Components;
+using Content.Shared.Coordinates;
+using Content.Server.Body.Systems;
 
 namespace Content.Server.Abilities.DeadSpace.Unitolog
 {
@@ -31,7 +37,8 @@ namespace Content.Server.Abilities.DeadSpace.Unitolog
         [Dependency] private readonly IGameTiming _timing = default!;
         [Dependency] private readonly EntityLookupSystem _lookup = default!;
         [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
-
+        [Dependency] private readonly SharedMindSystem _mindSystem = default!;
+        [Dependency] private readonly BodySystem _body = default!;
         public override void Initialize()
         {
             base.Initialize();
@@ -56,8 +63,9 @@ namespace Content.Server.Abilities.DeadSpace.Unitolog
             if (_container.IsEntityOrParentInContainer(uid))
                 return;
 
-            var victims = _lookup.GetEntitiesInRange(uid, 3f);
 
+            int count = 0;
+            var victims = _lookup.GetEntitiesInRange(uid, 3f);
             foreach(var victinUID in victims)
             {
                 if (EntityManager.HasComponent<HumanoidAppearanceComponent>(victinUID))
@@ -65,17 +73,21 @@ namespace Content.Server.Abilities.DeadSpace.Unitolog
                 if (_mobState.IsDead(victinUID))
                 {
 
-                    BeginSpawn(uid,victinUID,component);
+                        count += 1;
+                        component.entityUidList.Add(victinUID);
+                        if(count >= component.countDeads)
+                        {
+                            BeginSpawn(uid, victinUID, component);
+                            args.Handled = true;
+                            return;
+                        }
 
-                    args.Handled = true;
-                        return;
                 }
 
                 }
             }
 
-
-            _popupSystem.PopupEntity(Loc.GetString("Вы должны принести жертву, чтобы призвать обелиск"), uid, uid);
+            _popupSystem.PopupEntity(Loc.GetString("Вы должны принести три жертвы, чтобы призвать обелиск"), uid, uid);
             return;
         }
 
@@ -102,9 +114,31 @@ namespace Content.Server.Abilities.DeadSpace.Unitolog
             if (args.Cancelled || args.Handled || args.Args.Target == null)
             return;
 
-            EntityUid target = args.Args.Target.Value;
-            Spawn(component.WallPrototype, Transform(target).Coordinates);
-            QueueDel(target);
+            foreach (var entityUid in component.entityUidList)
+            {
+                QueueDel(entityUid);
+            }
+            Spawn(component.WallPrototype, Transform(args.Args.Target.Value).Coordinates);
+
+            if (!_mindSystem.TryGetMind(uid, out var mindIduid, out var minduid))
+                return;
+            _body.GibBody(uid);
+            var ent = Spawn("MobNecromant", Transform(uid).Coordinates);
+            _mindSystem.TransferTo(mindIduid, ent, mind: minduid);
+
+            var victims = _lookup.GetEntitiesInRange(uid, component.range);
+
+            foreach(var vict in victims)
+            {
+                if(HasComp<UnitologyComponent>(vict) && HasComp<HumanoidAppearanceComponent>(vict))
+                {
+                    if (!_mindSystem.TryGetMind(vict, out var mindId, out var mind))
+                    return;
+                    _body.GibBody(vict);
+                    ent = Spawn("MobTwitcherlvl2", Transform(vict).Coordinates);
+                    _mindSystem.TransferTo(mindId, ent, mind: mind);
+                }
+            }
             _actionsSystem.RemoveAction(uid, component.ObeliskActionEntity);
 
         }
