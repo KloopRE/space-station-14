@@ -297,6 +297,7 @@ namespace Content.Server.Administration.Systems
                     Impact = LogImpact.High
                 });
 
+
                 // force to activate artifact ignoring timeout
                 args.Verbs.Add(new Verb()
                 {

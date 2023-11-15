@@ -42,8 +42,8 @@ public sealed class NecroobeliskStoperSystem : EntitySystem
         if (!EntityManager.TryGetComponent<NecroobeliskComponent>(args.Args.Target.Value, out var xform))
             return;
 
-        xform.Active -= 1;
 
+        xform.NextCheckTimeSanity = xform.NextCheckTimeSanity + TimeSpan.FromSeconds(360);
         _audio.PlayPvs(component.CompleteSound, uid);
 
         //QueueDel(args.Args.Target.Value);

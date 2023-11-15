@@ -1,7 +1,7 @@
 
 using System.Numerics;
 using Content.Server.Body.Systems;
-using Content.Shared.DeadSpace.Necroobelisk.Components;
+using Content.Shared.DeadSpace.BlackNecroobelisk.Components;
 using Content.Shared.Maps;
 using Content.Shared.Physics;
 using Content.Shared.DeadSpace.InfectionDead.Components;
@@ -25,11 +25,14 @@ using Content.Shared.Damage;
 using Content.Shared.Destructible;
 using Content.Shared.Audio;
 using Robust.Shared.Player;
-using Content.Server.Station.Systems;
+using Content.Shared.Verbs;
+using Content.Server.Administration.Managers;
+using Robust.Shared.Utility;
+using Content.Shared.Database;
 
-namespace Content.Server.DeadSpace.Necroobelisk;
+namespace Content.Server.DeadSpace.BlackNecroobelisk;
 
-public sealed class TileNecroobeliskSystem : EntitySystem
+public sealed class TileBlackNecroobeliskSystem : EntitySystem
 {
     [Dependency] private readonly IMapManager _map = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
@@ -37,7 +40,6 @@ public sealed class TileNecroobeliskSystem : EntitySystem
     [Dependency] private readonly TileSystem _tile = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] protected readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly BodySystem _bodySystem = default!;
     [Dependency] private readonly IConfigurationManager _configuration = default!;
     [Dependency] private readonly AtmosphereSystem _atmosphere = default!;
     [Dependency] private readonly StationSystem _station = default!;
@@ -45,20 +47,22 @@ public sealed class TileNecroobeliskSystem : EntitySystem
     [Dependency] private readonly DamageableSystem _damage = default!;
     [Dependency] private readonly StationSystem _stationSystem = default!;
     [Dependency] private readonly InfectionDeadSystem _infection = default!;
+    [Dependency] private readonly IAdminManager _adminManager = default!;
     /// <inheritdoc/>
     public override void Initialize()
     {
         base.Initialize();
 
-        SubscribeLocalEvent<NecroobeliskComponent, SanityCheckEvent>(DoSanity);
-        SubscribeLocalEvent<NecroobeliskComponent, NecroobeliskSpawnArmyEvent>(DoArmy);
+        SubscribeLocalEvent<BlackNecroobeliskComponent, GetVerbsEvent<Verb>>(DoSetTransferVerbs);
+        SubscribeLocalEvent<BlackNecroobeliskComponent, SanityCheckEvent>(DoSanity);
+        SubscribeLocalEvent<BlackNecroobeliskComponent, BlackNecroobeliskSpawnArmyEvent>(DoArmy);
 
-        SubscribeLocalEvent<NecroobeliskComponent, NecroobeliskPulseEvent>(OnSeverityChanged);
-        SubscribeLocalEvent<NecroobeliskComponent, MapInitEvent>(OnMapInit);
-        SubscribeLocalEvent<NecroobeliskComponent, DestructionEventArgs>(OnDestr);
+        SubscribeLocalEvent<BlackNecroobeliskComponent, BlackNecroobeliskPulseEvent>(OnSeverityChanged);
+        SubscribeLocalEvent<BlackNecroobeliskComponent, MapInitEvent>(OnMapInit);
+        SubscribeLocalEvent<BlackNecroobeliskComponent, DestructionEventArgs>(OnDestr);
     }
 
-    private void OnDestr(EntityUid uid, NecroobeliskComponent component, DestructionEventArgs args)
+    private void OnDestr(EntityUid uid, BlackNecroobeliskComponent component, DestructionEventArgs args)
     {
        // _audio.Shutdown();
        // _audio.PlayPvs("/Audio/DeadSpace/Necromorfs/smash_through_wall_12.ogg", uid, AudioParams.Default.WithVariation(1f).WithVolume(-4f));
@@ -70,10 +74,8 @@ public sealed class TileNecroobeliskSystem : EntitySystem
         //_audio.PlayGlobal("/Audio/DeadSpace/Necromorfs/examobelisk.ogg", Filter.Local(), false, AudioParams.Default.WithVariation(1f).WithVolume(-5f));
     }
 
-    private void OnMapInit(EntityUid uid, NecroobeliskComponent component, MapInitEvent args)
+    private void OnMapInit(EntityUid uid, BlackNecroobeliskComponent component, MapInitEvent args)
     {
-        var xform = Transform(uid);
-        Spawn(component.SupercriticalSpawn, xform.Coordinates);
 
         var msg = new GameGlobalSoundEvent("/Audio/DeadSpace/Necromorfs/markersound.ogg", AudioParams.Default.WithVariation(1f).WithVolume(-5f));
         var stationFilter = _stationSystem.GetInOwningStation(uid);
@@ -81,7 +83,7 @@ public sealed class TileNecroobeliskSystem : EntitySystem
         RaiseNetworkEvent(msg, stationFilter);
     }
 
-    private void OnSeverityChanged(EntityUid uid, NecroobeliskComponent component, ref NecroobeliskPulseEvent args)
+    private void OnSeverityChanged(EntityUid uid, BlackNecroobeliskComponent component, ref BlackNecroobeliskPulseEvent args)
     {
 
         if (_mobState.IsDead(uid))
@@ -106,7 +108,7 @@ public sealed class TileNecroobeliskSystem : EntitySystem
         }
     }
 
-    private void DoSanity(EntityUid uid, NecroobeliskComponent component, ref SanityCheckEvent args)
+    private void DoSanity(EntityUid uid, BlackNecroobeliskComponent component, ref SanityCheckEvent args)
     {
         if (!HasComp<MobStateComponent>(args.victinUID) || !HasComp<HumanoidAppearanceComponent>(args.victinUID))
         {return;}
@@ -138,7 +140,7 @@ public sealed class TileNecroobeliskSystem : EntitySystem
 
     }
 
-    private void DoArmy(EntityUid uid, NecroobeliskComponent component, ref NecroobeliskSpawnArmyEvent args)
+    private void DoArmy(EntityUid uid, BlackNecroobeliskComponent component, ref BlackNecroobeliskSpawnArmyEvent args)
     {
 
         var xform = Transform(uid);
@@ -182,6 +184,120 @@ public sealed class TileNecroobeliskSystem : EntitySystem
         }
     }
 
+
+
+    private void DoSetTransferVerbs(EntityUid uid, BlackNecroobeliskComponent component, GetVerbsEvent<Verb> args)
+    {
+
+        if (!EntityManager.TryGetComponent(args.User, out ActorComponent? actor))
+            return;
+
+        var player = actor.PlayerSession;
+
+        if (_adminManager.IsAdmin(player))
+        {
+            if(component.Active >= 1)
+            {
+                args.Verbs.Add(new Verb()
+                {
+                    Text = Loc.GetString("Выключить обелиск"),
+                    Category = VerbCategory.Debug,
+                    Icon = new SpriteSpecifier.Texture(new("/Textures/Interface/VerbIcons/dot.svg.192dpi.png")),
+                    Act = () => SetActive(component),
+                    Impact = LogImpact.Medium
+                });
+            }
+            else
+            {
+                args.Verbs.Add(new Verb()
+                {
+                    Text = Loc.GetString("Включить обелиск"),
+                    Category = VerbCategory.Debug,
+                    Icon = new SpriteSpecifier.Texture(new("/Textures/Interface/VerbIcons/dot.svg.192dpi.png")),
+                    Act = () => SetActive(component),
+                    Impact = LogImpact.Medium
+                });
+            }
+
+            if(HasComp<DamageableComponent>(uid))
+            {
+                args.Verbs.Add(new Verb()
+                {
+                    Text = Loc.GetString("Включить неуязвимость"),
+                    Category = VerbCategory.Debug,
+                    Icon = new SpriteSpecifier.Texture(new("/Textures/Interface/VerbIcons/dot.svg.192dpi.png")),
+                    Act = () => SetDamageable(uid, component),
+                    Impact = LogImpact.Medium
+                });
+            }
+            else
+            {
+                args.Verbs.Add(new Verb()
+                {
+                    Text = Loc.GetString("Выключить неуязвимость"),
+                    Category = VerbCategory.Debug,
+                    Icon = new SpriteSpecifier.Texture(new("/Textures/Interface/VerbIcons/dot.svg.192dpi.png")),
+                    Act = () => SetDamageable(uid, component),
+                    Impact = LogImpact.Medium
+                });
+            }
+
+            args.Verbs.Add(new Verb()
+            {
+                Text = Loc.GetString("Изменить радиус безумного фона на 15"),
+                Category = VerbCategory.Debug,
+                Icon = new SpriteSpecifier.Texture(new("/Textures/Interface/VerbIcons/dot.svg.192dpi.png")),
+                Act = () => SetRangeSanity(component, 15f),
+                Impact = LogImpact.Medium
+            });
+            args.Verbs.Add(new Verb()
+            {
+                Text = Loc.GetString("Изменить радиус безумного фона на 30"),
+                Category = VerbCategory.Debug,
+                Icon = new SpriteSpecifier.Texture(new("/Textures/Interface/VerbIcons/dot.svg.192dpi.png")),
+                Act = () => SetRangeSanity(component, 30f),
+                Impact = LogImpact.Medium
+            });
+            args.Verbs.Add(new Verb()
+            {
+                Text = Loc.GetString("Изменить радиус безумного фона на 50"),
+                Category = VerbCategory.Debug,
+                Icon = new SpriteSpecifier.Texture(new("/Textures/Interface/VerbIcons/dot.svg.192dpi.png")),
+                Act = () => SetRangeSanity(component, 50f),
+                Impact = LogImpact.Medium
+            });
+
+        }
+
+    }
+
+    private void SetDamageable(EntityUid uid, BlackNecroobeliskComponent component)
+    {
+        if(HasComp<DamageableComponent>(uid))
+        {
+            RemComp<DamageableComponent>(uid);
+        }
+        else
+        {
+            AddComp<DamageableComponent>(uid);
+        }
+    }
+    private void SetRangeSanity(BlackNecroobeliskComponent component, float sanityRange)
+    {
+        component.RangeSanity = sanityRange;
+    }
+
+    private void SetActive(BlackNecroobeliskComponent component)
+    {
+        if(component.Active >= 1)
+        {
+            component.Active -= 1;
+        }
+        else
+        {
+            component.Active += 1;
+        }
+    }
 
     public void SpawnOnRandomGridLocation(EntityUid grid, string toSpawn)
     {

@@ -38,6 +38,8 @@ ent-FloorNecroTileItemFlesh = некротический пол
 
 ent-StructureObelisk = красный обелиск
     .desc = От него веет смертью.
+ent-StructureBlackObelisk = черный обелиск
+    .desc = От него веет смертью.
 ent-NecroKudzu = некрокудзу
     .desc = оно распространяется.
 ent-ObeliskStoper = бета001

@@ -1,4 +1,4 @@
-using Content.Shared.DeadSpace.Necroobelisk.Components;
+using Content.Shared.DeadSpace.BlackNecroobelisk.Components;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using Content.Shared.Administration.Logs;
@@ -8,9 +8,9 @@ using Robust.Shared.Utility;
 using Robust.Shared.Audio;
 using Content.Shared.DeadSpace.Sanity.Components;
 
-namespace Content.Shared.DeadSpace.Necroobelisk;
+namespace Content.Shared.DeadSpace.BlackNecroobelisk;
 
-public sealed class SharedNecroobeliskSystem : EntitySystem
+public sealed class SharedBlackNecroobeliskSystem : EntitySystem
 {
     [Dependency] protected readonly IGameTiming Timing = default!;
     [Dependency] protected readonly SharedAudioSystem Audio = default!;
@@ -23,19 +23,19 @@ public sealed class SharedNecroobeliskSystem : EntitySystem
 
     public override void Initialize()
     {
-        SubscribeLocalEvent<NecroobeliskComponent, EntityUnpausedEvent>(OnNecroobeliskUnpause);
+        SubscribeLocalEvent<BlackNecroobeliskComponent, EntityUnpausedEvent>(OnBlackNecroobeliskUnpause);
 
-        _sawmill = Logger.GetSawmill("necroobelisk");
+        _sawmill = Logger.GetSawmill("blacknecroobelisk");
     }
 
-    private void OnNecroobeliskUnpause(EntityUid uid, NecroobeliskComponent component, ref EntityUnpausedEvent args)
+    private void OnBlackNecroobeliskUnpause(EntityUid uid, BlackNecroobeliskComponent component, ref EntityUnpausedEvent args)
     {
         component.NextPulseTime += args.PausedTime;
         component.NextCheckTimeSanity += args.PausedTime;
         Dirty(component);
     }
 
-    public void DoSanityCheck(EntityUid uid, NecroobeliskComponent? component = null)
+    public void DoSanityCheck(EntityUid uid, BlackNecroobeliskComponent? component = null)
     {
         if (!Resolve(uid, ref component))
             return;
@@ -71,7 +71,7 @@ public sealed class SharedNecroobeliskSystem : EntitySystem
 
     }
 
-    public void DoNecroobeliskPulse(EntityUid uid, NecroobeliskComponent? component = null)
+    public void DoBlackNecroobeliskPulse(EntityUid uid, BlackNecroobeliskComponent? component = null)
     {
         if (!Resolve(uid, ref component))
             return;
@@ -79,30 +79,34 @@ public sealed class SharedNecroobeliskSystem : EntitySystem
         if (!Timing.IsFirstTimePredicted)
             return;
 
-        component.Pulselvl += 1;
-
         DebugTools.Assert(component.MinPulseLength > TimeSpan.FromSeconds(3)); // this is just to prevent lagspikes mispredicting pulses
         var variation = Random.NextFloat(-component.PulseVariation, component.PulseVariation) + 1;
         component.NextPulseTime = Timing.CurTime + GetPulseLength(component) * variation;
 
-        if (_net.IsServer)
-            _sawmill.Info($"Performing Necroobelisk pulse. Entity: {ToPrettyString(uid)}");
+        if (component.Active >= 1)
+        {
+        component.Pulselvl += 1;
 
-        Log.Add(LogType.Anomaly, LogImpact.Medium, $"Necroobelisk {ToPrettyString(uid)}.");
-        if (_net.IsServer)
-            Audio.PlayPvs("/Audio/DeadSpace/Necromorfs/Obelisk2.ogg", uid, AudioParams.Default.WithVariation(0.2f).WithVolume(15f));
 
-        var ev1 = new NecroobeliskSpawnArmyEvent();
+        if (_net.IsServer)
+            _sawmill.Info($"Performing BlackNecroobelisk pulse. Entity: {ToPrettyString(uid)}");
+
+        Log.Add(LogType.Anomaly, LogImpact.Medium, $"BlackNecroobelisk {ToPrettyString(uid)}.");
+        if (_net.IsServer)
+            Audio.PlayPvs("/Audio/DeadSpace/Necromorfs/obelisk4.ogg", uid, AudioParams.Default.WithVariation(0.2f).WithVolume(15f));
+
+        var ev1 = new BlackNecroobeliskSpawnArmyEvent();
         RaiseLocalEvent(uid, ref ev1);
 
-        var ev = new NecroobeliskPulseEvent();
+        var ev = new BlackNecroobeliskPulseEvent();
         RaiseLocalEvent(uid, ref ev);
+        }
     }
 
     /// </remarks>
     /// <param name="component"></param>
     /// <returns>The length of time as a TimeSpan, not including random variation.</returns>
-    public TimeSpan GetPulseLength(NecroobeliskComponent component)
+    public TimeSpan GetPulseLength(BlackNecroobeliskComponent component)
     {
         DebugTools.Assert(component.MaxPulseLength > component.MinPulseLength);
         return (component.MaxPulseLength - component.MinPulseLength) * 1 + component.MinPulseLength;
@@ -112,18 +116,18 @@ public sealed class SharedNecroobeliskSystem : EntitySystem
     {
         base.Update(frameTime);
 
-        var necroobeliskQuery = EntityQueryEnumerator<NecroobeliskComponent>();
-        while (necroobeliskQuery.MoveNext(out var ent, out var necroobelisk))
+        var blacknecroobeliskQuery = EntityQueryEnumerator<BlackNecroobeliskComponent>();
+        while (blacknecroobeliskQuery.MoveNext(out var ent, out var blacknecroobelisk))
         {
             // if the stability is under the death threshold,
             // update it every second to start killing it slowly.
-            if (Timing.CurTime > necroobelisk.NextPulseTime)
+            if (Timing.CurTime > blacknecroobelisk.NextPulseTime)
             {
-                DoNecroobeliskPulse(ent, necroobelisk);
+                DoBlackNecroobeliskPulse(ent, blacknecroobelisk);
             }
-            if (Timing.CurTime > necroobelisk.NextCheckTimeSanity)
+            if (Timing.CurTime > blacknecroobelisk.NextCheckTimeSanity)
             {
-                DoSanityCheck(ent, necroobelisk);
+                DoSanityCheck(ent, blacknecroobelisk);
             }
         }
     }

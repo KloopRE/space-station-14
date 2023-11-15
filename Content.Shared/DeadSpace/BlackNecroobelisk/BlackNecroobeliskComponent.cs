@@ -6,10 +6,10 @@ using Content.Shared.Maps;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
-namespace Content.Shared.DeadSpace.Necroobelisk.Components;
+namespace Content.Shared.DeadSpace.BlackNecroobelisk.Components;
 
 [RegisterComponent, NetworkedComponent]
-public sealed partial class NecroobeliskComponent : Component
+public sealed partial class BlackNecroobeliskComponent : Component
 {
     #region Sanity
 
@@ -69,21 +69,16 @@ public sealed partial class NecroobeliskComponent : Component
     public float SpawnRange = 5f;
 
     /// <summary>
-    /// The tile that is spawned by the Necroobelisk's effect
+    /// The tile that is spawned by the BlackNecroobelisk's effect
     /// </summary>
     [DataField("floorTileId", customTypeSerializer: typeof(PrototypeIdSerializer<ContentTileDefinition>)), ViewVariables(VVAccess.ReadWrite)]
     public string FloorTileId = "NecroFlesh";
 
-    /// <summary>
-    /// The entity spawned when the anomaly goes supercritical
-    /// </summary>
-    [DataField("superCriticalSpawn", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>)), ViewVariables(VVAccess.ReadWrite)]
-    public string SupercriticalSpawn = "NecroKudzu";
 
     #endregion
 
     [DataField("active")]
-    public int Active = 1;
+    public int Active = 0;
 
     #region Visualizer
     [DataField("state")]
@@ -103,18 +98,19 @@ public enum RevenantVisuals : byte
 
 
 [Serializable, NetSerializable]
-public sealed class NecroobeliskComponentState : ComponentState
+public sealed class BlackNecroobeliskComponentState : ComponentState
 {
     public TimeSpan NextPulseTime;
 }
 
-[ByRefEvent]
-
-public readonly record struct NecroobeliskPulseEvent();
 
 [ByRefEvent]
 
-public readonly record struct NecroobeliskSpawnArmyEvent();
+public readonly record struct BlackNecroobeliskPulseEvent();
+
+[ByRefEvent]
+
+public readonly record struct BlackNecroobeliskSpawnArmyEvent();
 
 [Serializable, NetSerializable]
 public sealed class SanityComponentState : ComponentState
